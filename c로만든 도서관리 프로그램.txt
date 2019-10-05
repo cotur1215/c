@@ -1,0 +1,426 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#define SIZE 10
+
+int booknum, bookstate, BookState;
+char name[40];//도서검색을 위한 배열
+int listnum = 5;//책을 추가할대 카운트되기위한 변수
+
+void ShowMenu(void);//메뉴출력
+void BookAdd(void);//책 추가
+void BookChange(void);//책변경
+void BookDelete(void);//책삭제
+void BookSearch(void);//책검색
+void BookReserve(void);//책대여반납
+void BookUser(void);//사서모드
+void PreservedBook(void);//저장된 5권의 책 출력
+
+
+
+struct Book
+{
+	char BookName[40];//책제목
+	char BookNum[40];//책일련번호=i로 둔다
+	char BookPublisher[40];//책출판서
+	char BookWriter[40];//책저자
+	char BookState[5];//책대여상태 0-대여가능,1-대여중
+};
+
+struct Book list[SIZE];
+
+
+int main(void)
+{
+
+	PreservedBook();
+	int number1;
+
+	while (1) {
+		ShowMenu();
+		printf("번호입력:");
+		scanf("%d", &number1);
+		if (number1 == 0) ShowMenu();//메뉴보기
+		if (number1 == 1) BookSearch();//책검색
+		if (number1 == 2) BookReserve();//대여반납
+		if (number1 == 3) BookUser();//사서모드-책 추가 변경 삭제
+		if (number1 == 4) return 0; //종료
+	}
+}
+
+void ShowMenu(void)
+{
+	printf("-----Menu-----\n");
+	printf("1.도서검색\n");
+	printf("2.대여반납\n");
+	printf("3.사서모드\n");
+	printf("4.종료\n");
+}
+
+void BookUser(void)
+{
+	int number2;
+	printf("-----사서모드-----\n");
+	printf("원하시는 모드를 고르시오.\n");
+	printf("1.책추가 2.책변경 3.책삭제\n");
+	printf("번호입력:");
+	scanf("%d", &number2);
+	if (number2 == 1) BookAdd();//책검색
+	if (number2 == 2) BookChange();//대여반납
+	if (number2 == 3) BookDelete();//사서모드-책 추가 변경 삭제
+}
+void BookAdd(void)
+
+{
+
+	char answer[4];
+	printf("-----BookAdd-----\n");
+	printf("책을추가하시겠습니까? yes or no\n");
+	scanf("%s", &answer);
+	if (answer[0] == 'y'&&answer[1] == 'e'&&answer[2] == 's')
+	{
+		printf("-----책을추가합니다.-----\n");
+		printf("책이름입력:");
+		scanf("%s", list[listnum].BookName);
+		printf("일련번호입력:");
+		scanf("%s", list[listnum].BookNum);
+		printf("책출판사입력:");
+		scanf("%s", list[listnum].BookPublisher);
+		printf("책저자입력:");
+		scanf("%s", list[listnum].BookWriter);
+		printf("대여가능\n");
+		list[listnum].BookState[0] = 0;//대여가능
+		listnum++;
+
+	}
+
+	else if (answer[0] == 'n'&&answer[1] == 'o')
+	{
+		return ;
+	}
+}
+
+void BookChange(void)
+{
+	int a,b =0;
+	
+	printf("-----BookChnage-----\n");
+	printf("변경하고 싶은 책제목을 입력하시오.\n");
+	scanf("%s", name);
+	for (a = 0; a < listnum+1; a++)
+	{
+		if (strcmp(name, list[a].BookName) == 0)
+		{
+			printf("책제목:%s\n", list[a].BookName);
+			printf("책일련번호:%s\n", list[a].BookNum);
+			printf("책출판서:%s\n", list[a].BookPublisher);
+			printf("책저자:%s\n", list[a].BookWriter);
+			if(list[a].BookState[0]==0) printf("책대여상태:%s -->대여가능합니다.\n", list[a].BookState);
+			if(list[a].BookState[0]==1) printf("책대여상태:%s -->대여중입니다.\n", list[a].BookState);
+			b = a;
+		}
+		break;
+		
+	}
+
+	if(strcmp(name, list[b].BookName) == 1 || strcmp(name, list[b].BookName) == -1)
+		{
+		printf("검색결과 없습니다.\n");
+		return;
+		}
+
+	    printf("-----변경하고싶은내용입력-----\n");
+		printf("책제목:%s -->\n", list[b].BookName);
+		printf("책일련번호:%s -->\n", list[b].BookNum);
+		printf("책출판서:%s -->\n", list[b].BookPublisher);
+		printf("책저자:%s -->\n", list[b].BookWriter);
+		if (list[b].BookState[0]==0) printf("책대여상태:%s -->대여가능합니다.\n", list[b].BookState);
+		if (list[b].BookState[0]==1) printf("책대여상태:%s -->대여중입니다.\n", list[b].BookState);
+		scanf("%s", list[b].BookName);
+		scanf("%s", list[b].BookNum);
+		scanf("%s", list[b].BookPublisher);
+		scanf("%s", list[b].BookWriter);
+
+
+}
+
+void BookDelete(void)
+{
+	int a,b = 0;
+	char answer5[4];
+	printf("-----도서삭제-----\n");
+	printf("삭제하고 싶은 도서를 검색하시오.\n");
+	scanf("%s", name);
+	for (a = 0; a < listnum + 1; a++)
+	{
+		if (strcmp(name, list[a].BookName) == 0)
+		{
+			printf("책제목:%s\n", list[a].BookName);
+			printf("책일련번호:%s\n", list[a].BookNum);
+			printf("책출판서:%s\n", list[a].BookPublisher);
+			printf("책저자:%s\n", list[a].BookWriter);
+			if (list[a].BookState[0] == 0) printf("책대여상태:%s -->대여가능합니다.\n", list[a].BookState);
+			if (list[a].BookState[0] == 1) printf("책대여상태:%s -->대여중입니다.\n", list[a].BookState);
+			b = a;
+		}
+		
+	}
+
+    if (strcmp(name, list[b].BookName) == 1 || strcmp(name, list[b].BookName) == -1)
+	{
+		printf("검색결과 없습니다.\n");
+		return;
+	}
+
+	printf("이 %s책을 삭제하시겠습니까? yes or no\n",list[b].BookName);
+	scanf("%s", &answer5);
+	if (answer5[0] == 'y'&&answer5[1] == 'e'&&answer5[2] == 's')
+	{
+		printf("%s책이 삭제되었습니다.\n", list[b].BookName);
+
+	
+		memmove(list[b].BookName, list[b + 1].BookName, 40);
+		memmove(list[b + 1].BookName, list[b + 2].BookName, 40);		
+		memmove(list[b + 2].BookName, list[b + 3].BookName, 40);
+		memmove(list[b + 3].BookName, list[b + 4].BookName, 40);
+		memmove(list[b + 4].BookName, list[b + 5].BookName, 40);
+		memmove(list[b + 5].BookName, list[b + 6].BookName, 40);
+		memmove(list[b + 6].BookName, list[b + 7].BookName, 40);
+		memmove(list[b + 7].BookName, list[b + 8].BookName, 40);
+		memmove(list[b + 8].BookName, list[b + 9].BookName, 40);
+		memmove(list[b + 9].BookName, list[b + 10].BookName, 40);
+
+		memmove(&list[b].BookNum, &list[b + 1].BookNum, 40);
+		memmove(&list[b + 1].BookNum, &list[b + 2].BookNum, 40);
+		memmove(&list[b + 2].BookNum, &list[b + 3].BookNum, 40);
+		memmove(&list[b + 3].BookNum, &list[b + 4].BookNum, 40);
+		memmove(&list[b + 4].BookNum, &list[b + 5].BookNum, 40);
+		memmove(&list[b + 5].BookNum, &list[b + 6].BookNum, 40);
+		memmove(&list[b + 6].BookNum, &list[b + 7].BookNum, 40);
+		memmove(&list[b + 7].BookNum, &list[b + 8].BookNum, 40);
+		memmove(&list[b + 8].BookNum, &list[b + 9].BookNum, 40);
+		memmove(&list[b + 9].BookNum, &list[b + 10].BookNum, 40);
+
+		memmove(list[b].BookPublisher, list[b + 1].BookPublisher, 40);
+		memmove(list[b + 1].BookPublisher, list[b + 2].BookPublisher, 40);
+		memmove(list[b + 2].BookPublisher, list[b + 3].BookPublisher, 40);
+		memmove(list[b + 3].BookPublisher, list[b + 4].BookPublisher, 40);
+		memmove(list[b + 4].BookPublisher, list[b + 5].BookPublisher, 40);
+		memmove(list[b + 5].BookPublisher, list[b + 6].BookPublisher, 40);
+		memmove(list[b + 6].BookPublisher, list[b + 7].BookPublisher, 40);
+		memmove(list[b + 7].BookPublisher, list[b + 8].BookPublisher, 40);
+		memmove(list[b + 8].BookPublisher, list[b + 9].BookPublisher, 40);
+		memmove(list[b + 9].BookPublisher, list[b + 10].BookPublisher, 40);
+
+		memmove(list[b].BookWriter, list[b + 1].BookWriter, 40);
+		memmove(list[b + 1].BookWriter, list[b + 2].BookWriter, 40);
+		memmove(list[b + 2].BookWriter, list[b + 3].BookWriter, 40);
+		memmove(list[b + 3].BookWriter, list[b + 4].BookWriter, 40);
+		memmove(list[b + 4].BookWriter, list[b + 5].BookWriter, 40);
+		memmove(list[b + 5].BookWriter, list[b + 6].BookWriter, 40);
+		memmove(list[b + 6].BookWriter, list[b + 7].BookWriter, 40);
+		memmove(list[b + 7].BookWriter, list[b + 8].BookWriter, 40);
+		memmove(list[b + 8].BookWriter, list[b + 9].BookWriter, 40);
+		memmove(list[b + 9].BookWriter, list[b + 10].BookWriter, 40);
+
+		memmove(&list[b].BookState, &list[b + 1].BookState, 5);
+		memmove(&list[b + 1].BookState, &list[b + 2].BookState, 5);
+		memmove(&list[b + 2].BookState, &list[b + 3].BookState, 5);
+		memmove(&list[b + 3].BookState, &list[b + 4].BookState, 5);
+		memmove(&list[b + 4].BookState, &list[b + 5].BookState, 5);
+		memmove(&list[b + 5].BookState, &list[b + 6].BookState, 5);
+		memmove(&list[b + 6].BookState, &list[b + 7].BookState, 5);
+		memmove(&list[b + 7].BookState, &list[b + 8].BookState, 5);
+		memmove(&list[b + 8].BookState, &list[b + 9].BookState, 5);
+		memmove(&list[b + 9].BookState, &list[b + 10].BookState, 5);
+
+		listnum--;
+	}
+
+	else if (answer5[0] == 'n'&&answer5[1] == 'o')
+	{
+		ShowMenu();
+	}
+
+}
+
+void BookSearch(void)
+{
+	int number3;
+	printf("전체도서보기:1번,책검색하기:2번\n");
+	printf("번호입력:");
+	scanf("%d", &number3);
+	if (number3 == 1)
+	{
+		printf("-----전체도서보기-----\n");
+	
+			for (int i = 0; i < listnum; i++)
+			{
+				printf("책제목:%s\n", list[i].BookName);
+				printf("책일련번호:%s\n", list[i].BookNum);
+				printf("책출판서:%s\n", list[i].BookPublisher);
+				printf("책저자:%s\n", list[i].BookWriter);
+				if (list[i].BookState[0] == 0) printf("책대여상태:%s -->대여가능합니다.\n", list[i].BookState);
+				if (list[i].BookState[0] == 1) printf("책대여상태:%s -->대여중입니다.\n", list[i].BookState);
+			}
+		
+		
+	
+	}
+	else if (number3 == 2)
+	{
+		printf("-----도서검색-----\n");
+		int a,b = 0;
+
+		printf("검색하고 싶은 책제목을 입력하시오.\n");
+		scanf("%s", name);
+		for (a = 0; a < listnum + 1; a++)
+		{
+			if (strcmp(name, list[a].BookName) == 0)
+			{
+				printf("책제목:%s\n", list[a].BookName);
+				printf("책일련번호:%s\n", list[a].BookNum);
+				printf("책출판서:%s\n", list[a].BookPublisher);
+				printf("책저자:%s\n", list[a].BookWriter);
+				if (list[a].BookState[0] == 0) printf("책대여상태:%s -->대여가능합니다.\n", list[a].BookState);
+				if (list[a].BookState[0] == 1) printf("책대여상태:%s -->대여중입니다.\n", list[a].BookState);
+				b = a;
+			}
+		
+		}
+
+		if (strcmp(name, list[b].BookName) == 1 || strcmp(name, list[b].BookName) == -1)
+		{
+			printf("검색결과 없습니다.\n");
+			return;
+		}
+	}
+}
+
+void BookReserve(void)
+{
+	char answer2[4];
+	int number4;
+	printf("-----도서대여반납-----\n");
+	printf("1.도서대여 2.도서반납\n");
+	scanf("%d", &number4);
+	if (number4 == 1)
+	{
+		printf("-----도서대여-----\n");
+		printf("-----책을검색합니다.-----\n");
+		int a, b = 0;
+
+		printf("대여하고 싶은 책제목을 입력하시오.\n");
+		scanf("%s", name);
+		for (a = 0; a < listnum + 1; a++)
+		{
+			if (strcmp(name, list[a].BookName) == 0)
+			{
+				printf("책제목:%s\n", list[a].BookName);
+				printf("책일련번호:%s\n", list[a].BookNum);
+				printf("책출판서:%s\n", list[a].BookPublisher);
+				printf("책저자:%s\n", list[a].BookWriter);
+				if (list[a].BookState[0] == 0) printf("책대여상태:%s -->대여가능합니다.\n", list[a].BookState);
+				if (list[a].BookState[0] == 1) printf("책대여상태:%s -->대여중입니다.\n", list[a].BookState);
+				b = a;
+			}
+		
+		}
+
+		if (strcmp(name, list[b].BookName) == 1 || strcmp(name, list[b].BookName) == -1)
+		{
+			printf("검색결과 없습니다.\n");
+			return ;
+		}
+
+		printf("이 책을 대여하시겠습니까? yes or no \n");
+		scanf("%s", answer2);
+		if (answer2[0] == 'y'&& answer2[1] == 'e'&& answer2[2] == 's')
+		{
+			list[b].BookState[0] = 1;
+			printf("책 %s가 대여되었습니다.\n", list[b].BookName);
+		}
+		else if (answer2[0] == 'n'&& answer2[1] == 'o')
+		{
+			ShowMenu();
+		}
+	}
+	if (number4 == 2)
+	{
+
+		printf("-----도서반납-----\n");
+		printf("-----책을검색합니다.-----\n");
+		int a, b = 0;
+
+		printf("반납하고 싶은 책제목을 입력하시오.\n");
+		scanf("%s", name);
+		for (a = 0; a < listnum + 1; a++)
+		{
+			if (strcmp(name, list[a].BookName) == 0)
+			{
+				printf("책제목:%s\n", list[a].BookName);
+				printf("책일련번호:%s\n", list[a].BookNum);
+				printf("책출판서:%s\n", list[a].BookPublisher);
+				printf("책저자:%s\n", list[a].BookWriter);
+				if (list[a].BookState[0] == 0) printf("책대여상태:%s -->대여가능합니다.\n", list[a].BookState);
+				if (list[a].BookState[0] == 1) printf("책대여상태:%s -->대여중입니다.\n", list[a].BookState);
+				b = a;
+			}
+		}
+
+		if (strcmp(name, list[b].BookName) == 1 || strcmp(name, list[b].BookName) == -1)
+		{
+			printf("검색결과 없습니다.\n");
+			return ;
+		}
+
+		printf("이 책을 반납하시겠습니까? yes or no \n");
+		scanf("%s", answer2);
+		if (answer2[0] == 'y'&& answer2[1] == 'e'&& answer2[2] == 's')
+		{
+			list[b].BookState[0] = 0;
+			printf("책 %s가 반납되었습니다.\n", list[b].BookName);
+		}
+		else if (answer2[0] == 'n'&& answer2[1] == 'o')
+		{
+			ShowMenu();
+		}
+	}
+
+}
+
+void PreservedBook(void)
+{
+	strcpy(list[0].BookName ,"윤성우의열혈C프로그래밍");
+	strcpy(list[0].BookNum,"97889996094050");
+	strcpy(list[0].BookWriter, "윤성우");
+	strcpy(list[0].BookPublisher, "오렌지미디어");
+	list[0].BookState[0]= 0;
+	
+
+	strcpy(list[1].BookName, "윤성우의열혈C++프로그래밍");
+	strcpy(list[1].BookNum, "9788996094043");
+	strcpy(list[1].BookWriter, "윤성우");
+	strcpy(list[1].BookPublisher, "오렌지미디어");
+	list[1].BookState[0] = 0;
+
+	strcpy(list[2].BookName, "C++기초플러스");
+	strcpy(list[2].BookNum, "9788931555356");
+	strcpy(list[2].BookWriter, "스테픈프라타");
+	strcpy(list[2].BookPublisher, "성안당");
+	list[2].BookState[0] = 0;
+
+	strcpy(list[3].BookName, "ROS");
+	strcpy(list[3].BookNum,"9791186710180");
+	strcpy(list[3].BookWriter, "표윤석,조한철 등");
+	strcpy(list[3].BookPublisher, "루비페이퍼");
+	list[3].BookState[0] = 0;
+
+	strcpy(list[4].BookName, "12가지인생의법칙");
+	strcpy(list[4].BookNum, "9791196067694");
+	strcpy(list[4].BookWriter, "조던B.피터슨");
+	strcpy(list[4].BookPublisher, "메이븐");
+	list[4].BookState[0] = 0;
+
+}

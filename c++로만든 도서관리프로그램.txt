@@ -1,0 +1,324 @@
+#include "library.h"
+//생성자와 소멸자
+BookInfo::BookInfo(string name, string num, string publisher, string writer, string state)//생성자
+	 :BookName(name), BookNum(num), BookPublisher(publisher), BookWriter(writer), BookState(state)
+{
+}
+BookInfo::~BookInfo()//소멸자
+{
+	
+
+}
+//변수반환함수
+string BookInfo::GetName()
+{
+	return BookName;
+}
+string BookInfo::GetNum()
+{
+	return BookNum;
+}
+string BookInfo::GetPublisher()
+{
+	return BookPublisher;
+}
+string BookInfo::GetWriter()
+{
+	return BookWriter;
+}
+string BookInfo::GetState()
+{
+	return BookState;
+}
+//내용변경을위한함수
+void BookInfo::ShowBookInfo() //책의정보를 보여준다.
+{
+	cout << "책제목:" << BookName << endl;
+	cout << "일련번호:" << BookNum << endl;
+	cout << "출판사:" << BookPublisher << endl;
+	cout << "저자:" << BookWriter << endl;
+	if (BookState == "0") cout << "대여가능"  << endl;
+	else if (BookState== "1") cout << "대여불가능" << endl;
+}
+void BookInfo::ChangeName(string name1)
+{
+	BookName = name1;
+	
+}
+void BookInfo::ChangeNum(string num1)
+{
+	
+	BookNum = num1;
+	
+}
+void BookInfo::ChangePublisher(string publisher1)
+{
+	BookPublisher = publisher1;
+	
+}
+void BookInfo::ChangeWriter(string writer1)
+{
+	BookWriter = writer1;
+	
+}
+void BookInfo::ChangeState(string state1)
+{
+	BookState = state1;
+	
+}
+//메인함수에 들어가는 기능성함수
+void BookInfo::ShowMenu(void)
+{
+	cout << "-----Menu-----\n" << endl;
+	cout << "1.도서검색\n" << endl;
+	cout << "2.대여반납\n" << endl;
+	cout << "3.사서모드\n" << endl;
+	cout << "4.종료\n" << endl;
+}
+void BookInfo::BookUser(string name, string num, string publisher, string writer, string state)
+{
+	
+	int number2;
+	cout << "-----사서모드-----\n" << endl;
+	cout << "원하시는 모드를 고르시오.\n" << endl;
+	cout << "1.책추가 2.책변경 3.책삭제\n" << endl;
+	cout << "번호입력:" << endl;
+	cin >> number2;
+	if (number2 == 1) BookAdd(name,num,publisher,writer,state);//책검색
+	if (number2 == 2) BookChange(name, num, publisher, writer, state);//대여반납
+	if (number2 == 3) BookDelete(name, num, publisher, writer, state);//사서모드-책 추가 변경 삭제
+}
+void BookInfo::BookAdd(string name, string num, string publisher, string writer, string state)
+{
+	char answer[4];
+
+	cout << "-----BookAdd-----\n";
+	cout << "책을추가하시겠습니까? yes or no\n";
+	cin >> answer;
+
+	if (answer[0] == 'y' && answer[1] == 'e' && answer[2] == 's')
+	{
+	
+		cout << "-----책을추가합니다.-----\n" << endl;
+		cout << "책이름입력:"; cin >> name;
+		cout << "일련번호입력:"; cin >> num;
+		cout << "책출판사입력:"; cin >> publisher;
+		cout << "책저자입력:"; cin >> writer;
+		cout << "대여가능\n" << endl;
+		state = "0";//대여가능
+	
+		book.push_back(new BookInfo(name, num, publisher, writer, state));//1차 내부벡터에 내용추가
+		fout << name << "\t" << num << "\t" << publisher << "\t" << writer << "\t" << state << endl;//파일출력을위한데이터저장
+
+	}
+
+	else if (answer[0] == 'n' && answer[1] == 'o')
+	{
+		return;
+	}
+}
+void BookInfo::BookChange(string name, string num, string publisher, string writer, string state)
+{
+	char search[20];
+	string name1;
+	string num1;
+	string publisher1;
+	string writer1;
+	cout << "책제목을 입력하시오:" << endl;
+	cin >> search;
+
+	BookInfo *books ;//books라는 포인트형 클래스 생성
+
+	for (vector<BookInfo*>::iterator iter = book.begin(); iter != book.end(); iter++)
+	{
+		books = *iter;
+		if (books->GetName() == search)
+		{
+
+			books->ShowBookInfo();
+			cout << "-----정보를입력하시오.-----\n" << endl;
+			cout << "변경할 책 이름입력:"; cin >> name1;
+			books->ChangeName(name1);
+			cout << "변경할 일련번호입력:"; cin >> num1;
+			books->ChangeNum(num1);
+			cout << "변경할책출판사입력:"; cin >> publisher1;
+			books->ChangePublisher(publisher1);
+			cout << "변경할책저자입력:"; cin >> writer1;
+			books->ChangeWriter(writer1);
+			if(state=="0")cout << "대여가능\n" << endl;
+			else if(state=="1")cout << "대여불가능\n" << endl;			
+			cout << "변경되었습니다." << endl;
+			break;
+		}
+	}
+	if (books->GetName() != search)
+	{
+		cout << "검색결과 없습니다." << endl;
+	}
+
+}
+void BookInfo::BookDelete(string name, string num, string publisher, string writer, string state)
+{
+	
+	char search[20];
+	cout << "책제목을 입력하시오:" << endl;
+	cin >> search;
+	
+	BookInfo* books = 0;//books라는 포인트형 클래스 생성
+
+	for (vector<BookInfo*>::iterator iter = book.begin(); iter != book.end(); iter++)
+	{
+		books = *iter;
+		if (books->GetName() == search)
+		{
+
+			book.erase(iter);
+			cout << books->GetName() << " 이 삭제되었습니다." << endl;
+			break;
+		}
+	}
+	if (books->GetName() != search)
+	{
+		cout << "검색결과 없습니다." << endl;
+	}
+}
+void BookInfo::BookSearch()
+{
+	BookInfo* books = 0;//books라는 포인트형 클래스 생성
+	int number3;
+	char search[20];
+	cout << "1.전체도서보기 2.책검색하기" << endl;
+	cin >> number3;
+	if (number3 == 1)
+	{
+		cout << "모든도서를출력합니다." << endl;
+		for (vector<BookInfo*>::iterator iter = book.begin(); iter != book.end(); iter++)
+		{
+			books = *iter;
+		    books->ShowBookInfo();		
+		}
+	}
+	else if (number3 == 2)
+	{
+		cout << "책을검색합니다." << endl;
+		cout << "책제목을 입력하시오:" << endl;
+		cin >> search;
+		for (vector<BookInfo*>::iterator iter = book.begin(); iter != book.end(); iter++)
+		{
+			books = *iter;
+			if (books->GetName() == search)
+			{
+
+				books->ShowBookInfo();
+				break;
+			}		
+		}
+	 if (books->GetName() != search)
+	{
+		 cout << "검색결과 없습니다." << endl;
+	}
+	}
+}
+void BookInfo::BookReserve()
+{
+	char search[20];
+	string state1;
+	int number2;
+	cout << "-----도서대여반납-----" << endl;
+	cout << "1.도서대여 2.도서반납" << endl;
+	cin >> number2;
+	if (number2 == 1)
+	{
+		cout << "-----도서대여-----" << endl;
+		cout << "책제목을 입력하시오:" << endl;
+		cin >> search;
+
+		BookInfo* books = 0;//books라는 포인트형 클래스 생성
+
+		for (vector<BookInfo*>::iterator iter = book.begin(); iter != book.end(); iter++)
+		{
+			books = *iter;
+			if (books->GetName() == search)
+			{
+				state1 = "1";
+				books->ShowBookInfo();
+				books->ChangeState(state1);
+				cout << books->GetName() << " 이 대여됬습니다." << endl;
+				break;
+			}
+		}
+		if (books->GetName() != search)
+		{
+			cout << "검색결과 없습니다." << endl;
+		}
+
+	}
+	else if (number2 == 2)
+	{
+		cout << "-----도서반납-----" << endl;
+		cout << "책제목을 입력하시오:" << endl;
+		cin >> search;
+
+		BookInfo* books = 0;//books라는 포인트형 클래스 생성
+
+		for (vector<BookInfo*>::iterator iter = book.begin(); iter != book.end(); iter++)
+		{
+			books = *iter;
+			if (books->GetName() == search)
+			{
+				state1 = "0";
+				books->ShowBookInfo();
+				books->ChangeState(state1);
+				cout << books->GetName() << " 이 반납됬습니다." << endl;
+				break;
+			}
+		}
+		if (books->GetName() != search)
+		{
+			cout << "검색결과 없습니다." << endl;
+		}
+	}
+}
+//파일읽기,쓰기를위한함수
+void BookInfo::ReadFile(string name, string num, string publisher, string writer, string state)
+{
+	ifstream in("PreservedBook.txt");
+	int line, n;
+	string buffer[27];
+	if (in.is_open())
+	{
+		for (n = 1; n < 26; n++)
+		{
+			if (line = n)		
+			{
+			in >> buffer[n];		
+			}
+		}
+		for (n = 1; n < 26;n+=5)	
+		{		
+		 name=buffer[n];
+		 num= buffer[n + 1];
+		 publisher=buffer[n + 2];
+		 writer= buffer[n + 3];
+		 state= buffer[n + 4];
+		 book.push_back(new BookInfo(name, num, publisher, writer, state));
+		}	     		
+    }
+	else
+	{
+		cout << "찾으시는파일이없습니다." << endl;
+	}
+}
+void BookInfo::SaveFile(string name, string num, string publisher, string writer, string state)
+{
+	fout.open("Info.txt");
+	BookInfo* books = 0;//books라는 포인트형 클래스 생성
+		for (vector<BookInfo*>::iterator iter = book.begin(); iter != book.end(); iter++)
+		{
+			books = *iter;
+			fout << books->GetName() << " " << books->GetNum() << " "
+				<< books->GetPublisher() << " " << books->GetWriter() << " "
+				<< books->GetState() << endl;
+		}
+}
+
